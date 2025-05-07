@@ -26,11 +26,12 @@ $active_users_query = "SELECT COUNT(*) AS count FROM users WHERE role = 'member'
 $active_users_result = $conn->query($active_users_query);
 $active_users = $active_users_result->fetch_assoc()['count'];
 
-// Fetch recent payment requests
+// Update recent payments query to show pending first
 $recent_payments_query = "SELECT p.*, CONCAT(u.first_name, ' ', u.last_name) as member_name 
                          FROM payments p 
                          JOIN users u ON p.user_id = u.id 
-                         ORDER BY p.date DESC LIMIT 5";
+                         WHERE p.status = 'pending'
+                         ORDER BY p.payment_date DESC";
 $recent_payments_result = $conn->query($recent_payments_query);
 
 // Fetch upcoming bazar schedule
@@ -332,6 +333,151 @@ $requests_result = $conn->query($requests_query);
         overflow-x: auto;
       }
     }
+
+    /* Animation Effects */
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes shimmer {
+        100% { left: 100%; }
+    }
+
+    /* Enhanced Container */
+    .dashboard-container {
+        animation: fadeIn 0.5s ease-in-out;
+    }
+
+    /* Enhanced Glass Card */
+    .glass-card {
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .glass-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 40px 0 rgba(31, 38, 135, 0.25);
+    }
+
+    /* Dashboard Cards Enhancement */
+    .dashboard-card {
+        position: relative;
+        overflow: hidden;
+        background: linear-gradient(145deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+        border-radius: 15px;
+        padding: 2rem;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .dashboard-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+            90deg,
+            transparent,
+            rgba(255, 255, 255, 0.2),
+            transparent
+        );
+        animation: shimmer 2s infinite;
+    }
+
+    .dashboard-card:hover {
+        transform: translateY(-10px) scale(1.02);
+        box-shadow: 0 20px 40px rgba(31, 38, 135, 0.15);
+    }
+
+    .card-value {
+        font-size: 2.8rem;
+        font-weight: bold;
+        background: linear-gradient(45deg, var(--accent), var(--primary));
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        margin: 1rem 0;
+    }
+
+    /* Enhanced Table Styles */
+    .meals-table, .inventory-table {
+        border-collapse: separate;
+        border-spacing: 0;
+        width: 100%;
+    }
+
+    .meals-table th, .inventory-table th {
+        padding: 1.5rem;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+        border-bottom: 2px solid var(--accent);
+    }
+
+    .meals-table tr, .inventory-table tr {
+        transition: all 0.3s ease;
+    }
+
+    .meals-table tr:hover, .inventory-table tr:hover {
+        background: rgba(255, 255, 255, 0.1);
+        transform: scale(1.01);
+    }
+
+    /* Action Buttons */
+    .button {
+        padding: 0.7rem 1.5rem;
+        border-radius: 25px;
+        font-weight: 600;
+        font-size: 0.9rem;
+        cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        border: 2px solid transparent;
+        min-width: 120px;
+        letter-spacing: 0.5px;
+        position: relative;
+        overflow: hidden;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+    }
+
+    .button::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+            90deg,
+            transparent,
+            rgba(255, 255, 255, 0.2),
+            transparent
+        );
+        animation: shimmer 2s infinite;
+    }
+
+    /* Status Badges */
+    .badge {
+        padding: 0.6rem 1.2rem;
+        border-radius: 30px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 100px;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
   </style>
 </head>
 <body>
@@ -343,7 +489,7 @@ $requests_result = $conn->query($requests_query);
         <a href="admin-dashboard.php" class="active">Dashboard</a>
         <a href="admin-inventory.php">Inventory</a>
         <a href="admin-members.php">Members</a>
-        <a href="logout.php">Logout</a>
+        <a href="login.html">Logout</a>
       </div>
     </div>
   </nav>
@@ -456,13 +602,14 @@ $requests_result = $conn->query($requests_query);
 
     <!-- Payment Approvals Section -->
     <div class="glass-card">
-      <h2 class="section-heading">Recent Payment Requests</h2>
+      <h2 class="section-heading">Pending Payment Requests</h2>
       <table class="admin-table">
         <thead>
           <tr>
             <th>Member</th>
             <th>Amount</th>
             <th>Method</th>
+            <th>Transaction ID</th>
             <th>Date</th>
             <th>Status</th>
             <th>Action</th>
@@ -472,16 +619,20 @@ $requests_result = $conn->query($requests_query);
           <?php while($payment = $recent_payments_result->fetch_assoc()): ?>
             <tr>
               <td><?php echo htmlspecialchars($payment['member_name']); ?></td>
-              <td>$<?php echo number_format($payment['amount'], 2); ?></td>
-              <td><?php echo htmlspecialchars($payment['method']); ?></td>
-              <td><?php echo date('F j, Y', strtotime($payment['date'])); ?></td>
+              <td>৳<?php echo number_format($payment['amount'], 2); ?></td>
+              <td><?php echo htmlspecialchars($payment['payment_method']); ?></td>
+              <td><?php echo htmlspecialchars($payment['transaction_id'] ?? 'N/A'); ?></td>
+              <td><?php echo date('F j, Y', strtotime($payment['payment_date'])); ?></td>
               <td><span class="badge badge-<?php echo $payment['status']; ?>"><?php echo ucfirst($payment['status']); ?></span></td>
               <td>
                 <?php if ($payment['status'] == 'pending'): ?>
-                  <button class="button">Approve</button>
-                  <button class="button btn-accent">Reject</button>
-                <?php else: ?>
-                  <button class="button" disabled>Processed</button>
+                  <form method="POST" action="approve_payment.php" style="display: inline;">
+                    <input type="hidden" name="payment_id" value="<?php echo $payment['id']; ?>">
+                    <input type="hidden" name="user_id" value="<?php echo $payment['user_id']; ?>">
+                    <input type="hidden" name="amount" value="<?php echo $payment['amount']; ?>">
+                    <button type="submit" name="action" value="approve" class="button">Approve</button>
+                    <button type="submit" name="action" value="reject" class="button btn-accent">Reject</button>
+                  </form>
                 <?php endif; ?>
               </td>
             </tr>

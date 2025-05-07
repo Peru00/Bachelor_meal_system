@@ -30,21 +30,6 @@
       width: 100%;
     }
 
-    .filter-options {
-      display: flex;
-      gap: 1rem;
-      width: 100%;
-      justify-content: center;
-    }
-
-    .filter-options select {
-      padding: 0.5rem 1rem;
-      border-radius: 5px;
-      border: 1px solid var(--glass-border);
-      background: var(--glass-bg);
-      color: var(--dark-primary);
-    }
-
     /* Meal Scheduler Section */
     .meal-scheduler {
       background: var(--glass-bg);
@@ -102,6 +87,46 @@
 
     .schedule-btn:hover {
       background: var(--dark-primary);
+    }
+
+    /* Meal History Section */
+    .meal-history {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: 1rem;
+      padding: 2rem;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
+      margin-bottom: 2rem;
+    }
+
+    .meal-history-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .meal-history-header h2 {
+      color: var(--primary);
+      margin: 0;
+    }
+
+    .filter-options {
+      display: flex;
+      gap: 1rem;
+      justify-content: flex-end;
+      flex-wrap: wrap;
+    }
+
+    .filter-options select {
+      padding: 0.5rem 1rem;
+      border-radius: 5px;
+      border: 1px solid var(--glass-border);
+      background: var(--glass-bg);
+      color: var(--dark-primary);
     }
 
     /* Meals Table */
@@ -183,10 +208,14 @@
         overflow-x: auto;
       }
       
+      .meal-history-header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      
       .filter-options {
         width: 100%;
-        flex-direction: column;
-        align-items: center;
+        justify-content: flex-start;
       }
       
       .rating-options {
@@ -224,21 +253,7 @@
 
   <main class="meals-container">
     <header class="meals-header">
-      <h1>My Meal History</h1>
-      <div class="filter-options">
-        <select id="month-filter">
-          <option value="all">All Months</option>
-          <option value="may" selected>May 2025</option>
-          <option value="april">April 2025</option>
-          <option value="march">March 2025</option>
-        </select>
-        <select id="meal-type-filter">
-          <option value="all">All Meal Types</option>
-          <option value="breakfast">Breakfast</option>
-          <option value="lunch">Lunch</option>
-          <option value="dinner">Dinner</option>
-        </select>
-      </div>
+      <h1>My Meal Planner</h1>
     </header>
 
     <!-- Meal Scheduler Section -->
@@ -286,8 +301,26 @@
       </form>
     </section>
 
-    <!-- Meals History Section -->
-    <section class="glass-card meals-list">
+    <!-- Meal History Section -->
+    <section class="glass-card meal-history">
+      <div class="meal-history-header">
+        <h2>My Meal History</h2>
+        <div class="filter-options">
+          <select id="month-filter">
+            <option value="all">All Months</option>
+            <option value="may" selected>May 2025</option>
+            <option value="april">April 2025</option>
+            <option value="march">March 2025</option>
+          </select>
+          <select id="meal-type-filter">
+            <option value="all">All Meal Types</option>
+            <option value="breakfast">Breakfast</option>
+            <option value="lunch">Lunch</option>
+            <option value="dinner">Dinner</option>
+          </select>
+        </div>
+      </div>
+      
       <table class="meals-table">
         <thead>
           <tr>
@@ -325,4 +358,84 @@
               </div>
             </td>
             <td>
-              <button class="update-btn">Update</button
+              <button class="update-btn">Update</button>
+            </td>
+          </tr>
+          <!-- Meal Entry 2 -->
+          <tr>
+            <td>#M-1424</td>
+            <td>May 14, 2025</td>
+            <td>Dinner</td>
+            <td>Beef Curry with Rice</td>
+            <td>1</td>
+            <td>$3.50</td>
+            <td>
+              <div class="rating-options">
+                <input type="radio" id="meal1424-rating1" name="meal1424-rating" value="1">
+                <label for="meal1424-rating1">1</label>
+                <input type="radio" id="meal1424-rating2" name="meal1424-rating" value="2">
+                <label for="meal1424-rating2">2</label>
+                <input type="radio" id="meal1424-rating3" name="meal1424-rating" value="3">
+                <label for="meal1424-rating3">3</label>
+                <input type="radio" id="meal1424-rating4" name="meal1424-rating" value="4">
+                <label for="meal1424-rating4">4</label>
+                <input type="radio" id="meal1424-rating5" name="meal1424-rating" value="5">
+                <label for="meal1424-rating5">5</label>
+              </div>
+            </td>
+            <td>
+              <button class="update-btn">Update</button>
+            </td>
+          </tr>
+          <!-- Meal Entry 3 -->
+          <tr>
+            <td>#M-1423</td>
+            <td>May 14, 2025</td>
+            <td>Breakfast</td>
+            <td>Paratha with Egg</td>
+            <td>2</td>
+            <td>$5.00</td>
+            <td>
+              <div class="rating-options">
+                <input type="radio" id="meal1423-rating1" name="meal1423-rating" value="1">
+                <label for="meal1423-rating1">1</label>
+                <input type="radio" id="meal1423-rating2" name="meal1423-rating" value="2">
+                <label for="meal1423-rating2">2</label>
+                <input type="radio" id="meal1423-rating3" name="meal1423-rating" value="3">
+                <label for="meal1423-rating3">3</label>
+                <input type="radio" id="meal1423-rating4" name="meal1423-rating" value="4">
+                <label for="meal1423-rating4">4</label>
+                <input type="radio" id="meal1423-rating5" name="meal1423-rating" value="5">
+                <label for="meal1423-rating5">5</label>
+              </div>
+            </td>
+            <td>
+              <button class="update-btn">Update</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+  </main>
+
+  <script>
+    // Price calculation script
+    document.getElementById('meal-name').addEventListener('change', updatePrice);
+    document.getElementById('meal-quantity').addEventListener('input', updatePrice);
+
+    function updatePrice() {
+      const mealSelect = document.getElementById('meal-name');
+      const quantity = document.getElementById('meal-quantity').value;
+      const priceDisplay = document.getElementById('total-price');
+      
+      if (mealSelect.selectedIndex > 0) {
+        const price = parseFloat(mealSelect.options[mealSelect.selectedIndex].dataset.price);
+        const totalPrice = (price * quantity).toFixed(2);
+        priceDisplay.textContent = `$${totalPrice}`;
+      } else {
+        priceDisplay.textContent = '$0.00';
+      }
+    }
+  </script>
+</body>
+</html>
